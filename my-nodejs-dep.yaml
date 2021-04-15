@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nodejs-app
+  labels:
+    app: nodejs
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: my-nodejs-app
+        image: myronv/my-nodejs-app
+        tag: latest
+        ports:
+        - containerPort: 1337
+      imagePullSecrets:
+        - name: dockerhub_id
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nodejs-app-lb
+  labels:
+    app: nodejs
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 1337
+  selector:
+    app: nodejs
